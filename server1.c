@@ -14,7 +14,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include "inet.h"
-#define MAX 100
+#define MAX 120
 int main(){
 	int bindfd,sockfd;
 	int recvfd,sendfd;
@@ -30,7 +30,7 @@ int main(){
 	//initialize the server address
 	memset(&serv_addr,0,sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(0); //Not sure of the port
+	serv_addr.sin_port = htons(UDP_PORT_NUM); //Not sure of the port
 	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	//create socket
@@ -56,17 +56,18 @@ int main(){
                 	return 1;
         }
 		switch(buffer)
-		{
+		{	case '0': 
+				exit(0);
 			case '1':this_time = time(&now);
-				 current_time = localtime(&this_time);
-				 strftime(s,MAX,"%D -%T \n",current_time);
+				current_time = localtime(&this_time);
+				strftime(s,MAX,"Current Date and Time: %D -%T \n",current_time);
 				break;
-			case '2': sprintf(s,"%d",getpid());
+			case '2': sprintf(s,"PID is: %d\n",getpid());
 				break;
-			case '3':sprintf(s,"%d",rand()%51);
+			case '3':sprintf(s,"Random number is: %d\n",rand()%51);
 				break;
 			default:
-				printf("Incorrect input value");
+				printf("Incorrect input value\n");
 		}
 		
 		

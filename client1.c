@@ -8,30 +8,36 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <signal.h>
 
 #include"inet.h"
 #define MAX 100
 
+void signal_handler(int);
 int menu_request();
+
+int sockfd;
+struct sockaddr_in client_addr,serv_addr;
+
 int main(){
 	
-	int sockfd;
-	struct sockaddr_in client_addr,serv_addr;
+	//int *sockfd;
+	//struct sockaddr_in *client_addr,*serv_addr;
 	char request;
 	char s[MAX];
 	int val_send;
 	int nreads;
 	int cli_len, bind_val;
-
+	//Call Signal
+	signal(SIGINT,signal_handler);
 	//define server address
-	memset(&serv_addr,0,sizeof(serv_addr));//confirm (memset(void *str,arg,arg))
+	memset(&serv_addr,0,sizeof(serv_addr));//confirm (memset(void *str,arg,arg)),how to assign this with pointer
 	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(PORT_NUM); 
+	serv_addr.sin_port = htons(UDP_PORT_NUM); 
 	serv_addr.sin_addr.s_addr = inet_addr(SERVER_IPADD);// should s_addr be in it
 
 	//define client address
-	memset(&client_addr,0,sizeof(client_addr));//confirm (memset(void *str,arg,arg))
+	memset(&client_addr,0,sizeof(client_addr));//confirm (memset(void *str,arg,arg)),,how to assign this with pointer
 	client_addr.sin_family = AF_INET;
         client_addr.sin_port = htons(0); //not sure of this 
         client_addr.sin_addr.s_addr = htonl(0);// should s_addr be in it
@@ -124,4 +130,22 @@ int menu_request(){
 		printf("Incorrect input, choose an integer value between 1 and 3\n");
 		menu_request();
 	}
+}
+
+void signal_handler(int signum){
+	char request = 0;
+	int val_send;
+	request = (char)('0'+ request);
+        int serv_len = sizeof(serv_addr);
+	//send to server
+                val_send = sendto(sockfd,&request,sizeof(request),0,(struct sockaddr *)(&serv_addr),serv_len); //(int socket, const void *message, size_t length,int flags, const struct sockaddr *dest_addr, socklen_t dest_len);
+                if (val_send == -1){
+                        perror("Sendto failed \n");
+                        exit(0);
+        }
+	printf("Goodbye...\n");
+	exit(0);
+
+
+
 }
