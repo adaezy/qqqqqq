@@ -1,4 +1,3 @@
-//Assignment A Grading Rubrics
 //Program to send menu request from client  and receive a response from server.
 #include <stdio.h>
 #include <sys/socket.h>
