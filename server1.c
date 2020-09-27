@@ -1,4 +1,3 @@
-//Assignment A Grading Rubrics
 //Program of the server which receives messages from the client.
 #include <stdio.h>
 #include <sys/socket.h>
